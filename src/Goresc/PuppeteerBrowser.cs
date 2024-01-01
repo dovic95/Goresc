@@ -22,11 +22,11 @@ public class PuppeteerBrowser : IGorescBrowser
     {
         this.page = await this.ConnectToBusinessPageAsync(this.scrappingSettings.BusinessUrl);
         
-        await this.PassCookiesAcceptancePageAsync(page);
+        await this.scrappingSettings.CookiesConsentNavigator.AcceptCookiesAsync(this.page);
         
         await page.WaitForNavigationAsync();
         
-        this.businessInformationProvider = new PuppeteerBusinessInformationProvider(page);
+        this.businessInformationProvider = new PuppeteerBusinessInformationProvider(page, this.scrappingSettings);
     }
 
     /// <inheritdoc />
@@ -58,19 +58,5 @@ public class PuppeteerBrowser : IGorescBrowser
         await newPage.GoToAsync(businessUrl.ToString(), WaitUntilNavigation.Load);
         
         return newPage;
-    }
-    
-    private async Task PassCookiesAcceptancePageAsync(IPage? businessPage)
-    {
-        ArgumentNullException.ThrowIfNull(businessPage, nameof(businessPage));
-        
-        var rejectAllCookiesButton = await businessPage.FindAsync("//button");
-        
-        if (rejectAllCookiesButton?.Any() == true)
-        {
-            await rejectAllCookiesButton[0].ClickAsync();
-        }
-
-        await businessPage.WaitForNavigationAsync(new NavigationOptions());
     }
 }
