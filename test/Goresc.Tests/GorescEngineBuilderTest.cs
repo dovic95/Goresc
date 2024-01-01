@@ -1,5 +1,7 @@
 ﻿namespace Goresc.Tests;
 
+using System.Globalization;
+
 public class GorescEngineBuilderTest
 {
     [Fact]
@@ -19,6 +21,7 @@ public class GorescEngineBuilderTest
         businessInformation.Name.Should().Be("The Ivy");
         businessInformation.Category.Should().Be("British restaurant");
         businessInformation.GlobalRating.Should().BeGreaterThan(0).And.BeLessOrEqualTo(5);
+        businessInformation.GlobalRating.ToString(CultureInfo.InvariantCulture).Should().HaveLength(3);
         businessInformation.TotalReviews.Should().BeGreaterThan(0);
 
         await session.DisposeAsync();
@@ -41,6 +44,9 @@ public class GorescEngineBuilderTest
         // Assert
         businessInformation.Name.Should().Be("The Ivy");
         businessInformation.Category.Should().Be("Restaurant britannique");
+        businessInformation.GlobalRating.Should().BeGreaterThan(0).And.BeLessOrEqualTo(5);
+        businessInformation.GlobalRating.ToString(CultureInfo.InvariantCulture).Should().HaveLength(3);
+        businessInformation.TotalReviews.Should().BeGreaterThan(0);
         
         await session.DisposeAsync();
     }
